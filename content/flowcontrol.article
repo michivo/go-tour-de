@@ -20,7 +20,7 @@ die Variable wird nur innerhalb des Scopes der `for`-Schleife sichtbar sein.
 Die Schleife wird mit den Iterationen aufhören, wenn der condition-Ausdruck 
 `false` ergibt.
 
-Merke: Anders als in C, Java der Javascript gibt es keine runden Klammern um 
+Merke: Anders als in C, Java oder Javascript gibt es keine runden Klammern um 
 die drei oben genannten Komponenten, dafür müssen die `{`}` zwingend gesetzt werden.
 
 .play flowcontrol/for.go

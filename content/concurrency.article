@@ -130,23 +130,23 @@ Lies dann zehn Werte vom Kanal und gib sie aus. Es sollten die Zahlen 1, 2, 3, .
 
 * sync.Mutex
 
-Wir haben gesehen wie hervorragend Kanäle geeignet sind für die Kommunikation zwischen Goroutinen.
+We've seen how channels are great for communication among goroutines.
 
-Aber was ist wenn wir keine Kommunikation benötigen? Was wenn wir nur sicherstellen wollen,
-dass nur eine Goroutine gleichzeitig auf eine Variable zugreifen kann um Konflikte zu vermeiden? 
+But what if we don't need communication? What if we just want to make sure only
+one goroutine can access a variable at a time to avoid conflicts?
 
-Dieses Konzept heisst _mutual_exclusion_, und der gebräuchliche Name für die Datenstruktur welche dies bereitstellt ist _mutex_. 
+This concept is called _mutual_exclusion_, and the conventional name for the data structure that provides it is _mutex_.
 
-Go's Standardbibliothek bietet mutual exclusion mit
-[[https://golang.org/pkg/sync/#Mutex][`sync.Mutex`]] und seine beiden Methoden:
+Go's standard library provides mutual exclusion with
+[[https://golang.org/pkg/sync/#Mutex][`sync.Mutex`]] and its two methods:
 
 - `Lock`
 - `Unlock`
 
-Wir können einen Teil des Quellcodes mit mutual exclusion ausführen lassen indem wir ihn
-mit einem Aufruf von `Lock` und `Unlock` einklammern wie in der Methode `Inc` gezeigt.
+We can define a block of code to be executed in mutual exclusion by surrounding it
+with a call to `Lock` and `Unlock` as shown on the `Inc` method.
 
-Wir können auch `defer` benutzen um sicherzustellen, dass der Mutex entsperrt wird wie in der `Value` Methode.
+We can also use `defer` to ensure the mutex will be unlocked as in the `Value` method.
 
 .play concurrency/mutex-counter.go
 
