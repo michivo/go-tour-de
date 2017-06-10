@@ -1,0 +1,233 @@
+Pakete, Variablen und Funktionen
+Lerne die grundlegenden Bausteine, aus denen jedes Go-Programm besteht.
+
+Die Autoren von Go
+http://golang.org
+
+* Pakete
+
+Jedes Go-Programm besteht aus Paketen.
+
+Programme starten in einem Paket namens `main`.
+
+Dieses Programm verwendet die Pakete mit den Importpfaden `"fmt"` und `"math/rand"`.
+
+Gemäß Konvention entspricht der Paketname dem letzten Element des Importpfades. Zum Beispiel beinhaltet das Paket `"math/rand"` Dateien, die mit der Anweisung `package`rand` beginnen.
+
+#appengine: *Merke:* Die Umgebung, in der diese Programme ausgeführt werden,
+#appengine: ist deterministisch. `rand.Intn` wird immer denselben Wert 
+#appengine: zurückgeben.
+#appengine:
+#appengine: (Um eine andere Zahl zu sehen, kann dem Zufallszahlengenerator ein anderer Startwert (seed) vorgegeben werden - siehe [[http://golang.org/pkg/math/rand/#Seed][`rand.Seed`]].)
+
+.play basics/packages.go
+
+* Imports
+
+Dieser Code gruppiert die Imports in eine eingeklammerte, gruppierte import-Anweisung.
+
+Man kann ebenso mehrere import-Anweisungen hintereinander anführen, wie z.B.:
+
+	import "fmt"
+	import "math"
+
+Gruppierte import-Anweisungen enstprechen dem empfohlenen Go-Programmierstil.
+
+.play basics/imports.go
+
+* Exportierte Namen
+
+In Go wird ein Name dann exportiert, wenn er mit einem Großbuchstaben beginnt. `Pizza` wird zum
+Beispiel exportiert, genauso wie `Pi`, das vom `math`-Paket exportiert wird.
+
+`pizza` und `pi` beginnen nicht mit Großbuchstaben, werden somit auch nicht exportiert.
+
+Wenn du ein Paket importierst, kannst du nur auf dessen exportierte Namen zugreifen. Auf 
+jegliche nicht exportierte Namen kann von außen nicht zugegriffen werdne.
+
+Führe den Code aus, beachte die Fehlermeldung.
+
+Benenne `math.pi` in `math.Pi` um, um den Fehler zu beheben, und versuche es noch einmal.
+
+.play basics/exported-names.go
+
+* Funktionen
+
+Eine Funktion kann keine oder mehr Argumente entgegennehmen.
+
+In diesem Beispiel müssen `add` zwei Parameter des Typs `int` übergeben werden.
+
+Merke: Der Variablentyp kommt _nach_ dem Variablennamen.
+
+(Weitere Informationen, warum Typen so aussehen wie sie aussehen sind in diesem [[http://golang.org/doc/articles/gos_declaration_syntax.html][Artikel über die Deklarationssyntax von Go]] zu finden.)
+
+.play basics/functions.go
+
+* Mehr zu Funktionen
+
+Wenn zwei oder mehr hintereinander angeführte Funktionsparameter denselben Typ haben, kann der Typ bei all diesen Parametern außer dem letzten weggelassen werden.
+
+In diesem Beispiel wurde
+
+	x int, y int
+
+auf
+
+	x, y int
+
+verkürzt.
+
+.play basics/functions-continued.go
+
+* Mehrere Ergebnisse
+
+Eine Funktion kann eine beliebige Anzahl von Rückgabewerten zurückgeben.
+
+Die Funktion `swap` gibt zwei strings zurück.
+
+.play basics/multiple-results.go
+
+* Rückgabewerte mit Namen
+
+Rückgabewerte in Go können wie gewöhnliche Variablen einen Namen haben.
+
+Diese Namen sollten verwendet werden, um die Bedeutung der Rückgabewerte zu dokumentieren.
+
+Eine `return` -Anweisung ohne Argumente gibt die aktuellen Werte der Ergebnisse zurück. Das wird auch als _nacktes_ return bezeichnet.
+
+Nackte `return` -Anweisungen sollten nur in kurzen Funktionen verwendet werden, wie das Beispiel hier zeigt. Sie können die Lesbarkeit des Codes in längeren Funktionen erschweren.
+
+.play basics/named-results.go
+
+* Variablen
+
+Die Anweisung `var` deklariert eine Liste von Variablen. Wie bei Listen von Funktionsparametern kommt der Typ zuletzt.
+
+Eine Anweisung `var` kann auf Paket- oder Funktionsebene vorkommen, beides wird in diesem Beispiel gezeigt.
+
+.play basics/variables.go
+
+* Variablen mit Initializer
+
+var-Deklarationen können auch mit einem Initializer (einem pro Variable) versehen sein.
+
+Wenn ein Initializer vorhanden ist, muss der Variablentyp nicht angegeben werden. Die Variable wird den Typ des Initializers übernehmen.
+
+.play basics/variables-with-initializers.go
+
+* Kurze Variablendeklarationen
+
+Innerhalb einer Funktion kann die kompakte `:=` Anweisung statt der `var` -Anweisung mit Initializer für die Deklaration und Zuweisung verwendet werden.
+
+Außerhalb einer Funktion muss jede Anweisung mit einem Schlüsselwort (`var`, `func`, ...) beginnen. Die `:=` -Anweisung ist also nicht verfügbar.
+
+.play basics/short-variable-declarations.go
+
+* Basistypen
+
+Die Basistypen in Go sind
+
+	bool
+
+	string
+
+	int  int8  int16  int32  int64
+	uint uint8 uint16 uint32 uint64 uintptr
+
+	byte // anderer Name für uint8
+
+	rune // anderer Name für int32
+	     // repräsentiert einen Unicode Code Point
+
+	float32 float64
+
+	complex64 complex128
+
+Das Beispiel zeigt einige Variablen unterschiedlichen Typs und auch, wie Deklarationen (ähnlich den import-Anweisungen) in Blöcke gruppiert werden können.
+
+Die Datentypen `int`, `uint` und `uintptr` belegen auf 32-bit-Systemen auch 32 bits und auf 64-bit-Systemen 64 bits. Wenn 
+du einen Ganzzahlwert verwenden möchtest, solltes du immer `int` verwenden, außer es gibt einen bestimmten Grund, einen 
+"kleineren" Typ oder einen unsigned Typ zu verwenden.
+
+.play basics/basic-types.go
+
+* Nullwerte
+
+Variablen, die ohne expliziten Wert deklariert werden, werden implizit mit ihrem jeweiligen _Nullwert_ initialisiert.
+
+Der Nullwert ist:
+
+- `0` für numerische Typen
+- `false` für boolesche Werte und
+- `""` (Leerstring) für strings
+
+.play basics/zero.go
+
+* Typumwandlungen
+
+Der Ausdruck `T(v)` wandelt den Wert `v` in den Typ `T` um.
+
+Beispiele für numerische Typumwandlungen:
+
+	var i int = 42
+	var f float64 = float64(i)
+	var u uint = uint(f)
+
+Oder, etwas vereinfacht:
+
+	i := 42
+	f := float64(i)
+	u := uint(f)
+
+Im Gegensatz zu C bedarf es für die Zuweisung von Werten unterschiedlichen Typs immer einer expliziten Typumwandlung.
+
+Versuche, das `float64` oder das `int` im Beispiel zu entfernen und den Code auszuführen.
+
+.play basics/type-conversions.go
+
+* Typinferenz
+
+Wird eine Variable ohne Angabe des Typs deklariert (also mit `var` ohne Typ oder mit der `:=` -Syntax), wird der Typ der Variable aus dem Wert auf der rechten Seite _abgeleitet_.
+
+Hat der Wert auf der rechten Seite einer Deklaration einen Wert, dann hat die neue Variable den selben Typ:
+
+	var i int
+	j := i // j ist ein int
+
+Ist der Wert auf der rechten Seite eine nicht typisierte numerische Konstante, ist die neue Variable vom Typ `int`, `float64` oder `complex128`, jeweils abhängig von der Genauigkeit der Konstante:
+
+	i := 42           // int
+	f := 3.142        // float64
+	g := 0.867 + 0.5i // complex128
+
+Versuche, den Initialwert von `v` im Beispielcode zu ändern und beobachte, wie der Typ dieser Variable sich abhängig vom Initialwert ändert.
+
+.play basics/type-inference.go
+
+* Konstanten
+
+Konstanten werden wie Variablen deklariert, allerdings mit dem Schlüsselwort `const`.
+
+Konstanten können Buchstaben, Strings, boolesche oder numerische Werte sein.
+
+Konstanten können nicht mit der `:=` -Syntax deklariert werden.
+
+.play basics/constants.go
+
+* Numerische Konstanten
+
+Numerische Konstanten sind hochgenaue _Werte_.
+
+Eine nicht typisierte Konstante nimmt den Typ an, der sich aus ihrem Kontext ergibt.
+
+Versuche, auch `needInt(Big)` auszugeben.
+
+(Ein `int` kann höchstens einen 64-bit-Ganzzahlwert halten, manchmal auch weniger.)
+
+.play basics/numeric-constants.go
+
+* Gratuliere!
+
+Du hast diese Lektion beendet!
+
+Du kannst nun zurück zur Liste der [[/list][Module]] gehen um zu sehen, welche Lektionen als nächstes anstehen. Alternativ kannst du gleich mit der [[javascript:click('.next-page')][nächsten Lektion]] weitermachen.

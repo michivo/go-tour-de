@@ -1,0 +1,149 @@
+Kontrollstrukturen: for, if, else und switch
+Lerne, wie du den Ablauf deines Codes mit Verzweigungen und Schleifen steuern kannst.
+
+Die Go-Autoren
+http://golang.org
+
+* For
+
+Go hat nur ein Schleifenkonstrukt, die `for` -Schleife.
+
+Die normale `for`-Schleife hat drei, durch Strichpunkte getrennte Komponenten:
+
+- das init-Statement: wird vor der ersten Schleifeniteration ausgeführt
+- der condition-Ausdruck: wird vor jeder Iteration ausgewertet
+- das post-Statement: wird am Ende jeder Interation ausgeführt
+
+Das init-Statement wird oft nur eine kurze Variablendeklaration sein, und
+die Variable wird nur innerhalb des Scopes der `for`-Schleife sichtbar sein.
+
+Die Schleife wird mit den Iterationen aufhören, wenn der condition-Ausdruck 
+`false` ergibt.
+
+Merke: Anders als in C, Java der Javascript gibt es keine runden Klammern um 
+die drei oben genannten Komponenten, dafür müssen die `{`}` zwingend gesetzt werden.
+
+.play flowcontrol/for.go
+
+* Mehr zu for 
+
+Wie in C oder Java können init-Statement und post-Statement weggelassen werden.
+
+.play flowcontrol/for-continued.go
+
+* For ist Gos "while"
+
+Nun kann man auch die Strichpunkte weglassen: Die `for` -Schleife in Go entspricht somit der `while` -Schleife in C.
+
+.play flowcontrol/for-is-gos-while.go
+
+* Forever - Endlosschleifen
+
+Wird auch die Schleifenbedingung weggelassen, läuft die Schleife immer weiter. Somit kann man eine Endlosschleife sehr kompakt formulieren.
+
+.play flowcontrol/forever.go
+
+* If
+
+Die `if` -Anweisung sieht aus wie in C oder Java, lediglich die `(`)` sind verschwunden, die `{`}` müssen gesetzt werden.
+
+(Kommt dir das bekannt vor?)
+
+.play flowcontrol/if.go
+
+* If mit einer kurzen Anweisung
+
+Gleich wie bei `for` kann auch die `if` -Anweisung mit einer kurzen Anweisung beginnen, die vor der `if` -Bedingung ausgeführt wird.
+
+Variablen, die in dieser Anweisung deklariert werden sind nur bis zum Ende des `if` -Blocks sichtbar.
+
+(Versuche, `v` in der letzten `return` -Anweisung zu verwenden.)
+
+.play flowcontrol/if-with-a-short-statement.go
+
+* If und else
+
+Variablen, die innerhalb einer kurzen `if` -Anweisung deklariert werden, sind auch innerhalb des `else` -Blocks sichtbar.
+
+(Beide `pow`-Aufrufe werden ausgeführt und kommen vor dem Beginn des Aufrufs von `fmt.Println` zurück)
+
+.play flowcontrol/if-and-else.go
+
+* Übung: Schleifen und Funktionen
+
+Implementiere als einfache Übung in der Arbeit mit Funktionen und Schleifen die Wurzelberechnung mit dem Newton-Verfahren.
+
+Mit dem Newton-Verfahren nähert man sich an die Wurzel aus x (`Sqrt(x)`) mithilfe eine Startwerts _z_ durch Wiederholen der folgenden Berechnung an:
+
+.image /content/img/newton.png
+
+Implementiere als ersten Schritt, dass die Berechnung 10 mal wiederholt wird und schau, wie nahe du an das richtige Ergebnis für diverse Werte (1, 2, 3, ...) kommst.
+
+Ändere im nächsten Schritt die Schleifenbedingung, sodass die Schleife verlassen wird sobald sich das Ergebnis nicht mehr (oder nur noch um einen sehr kleines Delta) ändert. Schau, ob jetzt mehr oder weniger Iterationen benötigt werden. Wie nahe bist du an [[http://golang.org/pkg/math/#Sqrt][math.Sqrt]]?
+
+Hinweis: Um eine Gleitkommazahl zu deklarieren und zu initialisieren, verwende die Gleitkommasyntax (1.0) oder wandle den Typ von int auf float64 um:
+
+	z := float64(1)
+	z := 1.0
+
+.play flowcontrol/exercise-loops-and-functions.go
+
+* Switch
+
+Wahrscheinlich hast du schon erraten, wie die `switch` -Anweisung aussieht.
+
+Ein `case` beendet den `switch` -Block automatisch, außer er endet mit einer `fallthrough` -Anweisung.
+
+.play flowcontrol/switch.go
+
+* Switch Auswertereihenfolge 
+
+Switch-Anweisungen werten die cases von oben nach unten aus und brechen ab, sobald ein case zutrifft.
+
+(Zum Beispiel wird bei,
+
+	switch i {
+	case 0:
+	case f():
+	}
+
+`f` nicht aufgerufen, wenn `i==0`.)
+
+#appengine: *Merke:* Die Zeit im Go-Playground scheint immer um
+#appengine: 2009-11-10 23:00:00 UTC zu beginnen. Die Bedeutung dieses Wertes zu erforschen
+#appengine: bleibt dem geneigten Leser überlassen.
+
+.play flowcontrol/switch-evaluation-order.go
+
+* Switch ohne Bedingung
+
+Ein Switch ohne Bedingung ist dasselbe wie ein `switch`true`.
+
+Dieses Konstrukt kann als saubere Alternative zu langen if-then-else-Ketten verwendet werden.
+
+.play flowcontrol/switch-with-no-condition.go
+
+* Defer
+
+Eine defer-Anweisung verzögert die Ausführung einer Funktion bis die umgebende Funktion zurückkehrt.
+
+Die Argumente des verzögerten Aufrufs werden sofort ausgewertet, der Funktionsaufruf selbst wird aber
+erst durchgeführt wenn die umgebende Funktion zurückkehrt.
+
+.play flowcontrol/defer.go
+
+* Gestackte defers
+
+Verzögerte Funktionsaufrufe werden auf einen Stack gelegt. Kehrt eine Funktion zurück,
+werden alle verzögerten Aufrufe nacheinander (LIFO, also last-in-first-out) ausgeführt.
+
+Um mehr über defer-Anweisungen und verzögerte Aufrufe zu erfahren, lies diesen
+[[https://blog.golang.org/defer-panic-and-recover][Blog Post]].
+
+.play flowcontrol/defer-multi.go
+
+* Gratuliere!
+
+Du hast diese Lektion beendet!
+
+Du kannst nun zurück zur Liste der [[/list][Module]] gehen um zu sehen, welche Lektionen als nächstes anstehen. Alternativ kannst du gleich mit der [[javascript:click('.next-page')][nächsten Lektion]] weitermachen.

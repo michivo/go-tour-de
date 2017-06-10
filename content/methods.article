@@ -1,0 +1,417 @@
+Methoden und Interfaces
+In dieser Lektion geht es um Methoden und Interfaces - die Konstrukte, die Objekte und deren Verhalten definieren.
+
+Die Autoren von Go
+http://golang.org
+
+* Methoden
+
+In Go gibt es keine Klassen. Allerdings können Methoden auf Struct-Typen definiert werden.
+
+Der _Empfänger_einer_Methode_ scheint in der Parameterliste der Methode zwischen dem Schlüsselwort `func` und dem Methodennamen auf.
+
+In diesem Beispiel hat die `Abs`-Methode einen Empfänger namens `v` vom Typ `Vertex`.
+
+.play methods/methods.go
+
+* Methoden sind Funktionen
+
+Merke: Eine Methode ist nur eine Funktion mit einem Empfänger-Argument.
+
+Diese Implementierung von `Abs` ist eine normale Funktion ohne Änderung der Funktionalität.
+
+.play methods/methods-funcs.go
+
+* Mehr zu Methoden
+
+Methoden können auf _jedem_ Typ innerhalb deines Pakets definiert werden, nicht nur Struct-Typen.
+
+In diesem Beispiel sehen wir einen numerischen Typen `MyFloat` mit einer `Abs`-Methode.
+
+Es ist allerdings nicht möglich, Methoden auf Typen aus anderen Paketen zu definieren (das gilt auch für vordefinierte Typen wie `string`, `int` etc.).
+
+.play methods/methods-continued.go
+
+* Pointer-Empfänger
+
+Es ist auch möglich, Methoden mit Pointer-Empfängern zu deklarieren.
+
+Das bedeutet, dass der Empfänger die Syntax als `*T` für einen Typ `T` dargestellt wird.
+`T` kann in diesem Fall selbst kein Pointer, wie zum Beispiel `*int` sein.
+
+Zum Beispiel ist die `Scale`-Methode für `*Vertex` definiert.
+
+Methoden mit Pointer-Empfängern können den Wert, der ihnen übergeben wird,
+selbst verändern (so wie `Scale` im Beispiel).
+Nachdem Methoden oft auch etwas an ihren Empfängern ändern, sind Pointer-Empfänger
+gängiger als Wert-Empfänger.
+
+Versuche, den `*` von der Deklaration der `Scale`-Funktion in Zeile 16 zu
+entfernen und beobachte, wie sich das Programm nun verhält.
+
+Mit einem Wert-Empfänger arbeitet die `Scale`-Methode auf einer Kopie des
+ursprünglichen `Vertex`-Werts.
+Das ist dasselbe Verhalten wie bei jedem anderen Argument einer Funktion.
+Die `Scale`-Methode muss also einen Pointer-Receiver haben, um den in `main`
+deklarierten `Vertex`-Wert zu verändern.
+
+.play methods/methods-pointers.go
+
+* Pointers and functions
+
+Here we see the `Abs` and `Scale` methods rewritten as functions.
+
+Again, try removing the `*` from line 16.
+Can you see why the behavior changes?
+What else did you need to change for the example to compile?
+
+(If you're not sure, continue to the next page.)
+
+.play methods/methods-pointers-explained.go
+
+* Methods and pointer indirection
+
+Comparing the previous two programs, you might notice that
+functions with a pointer argument must take a pointer:
+
+	var v Vertex
+	ScaleFunc(v)  // Compile error!
+	ScaleFunc(&v) // OK
+
+while methods with pointer receivers take either a value or a pointer as the
+receiver when they are called:
+
+	var v Vertex
+	v.Scale(5)  // OK
+	p := &v
+	p.Scale(10) // OK
+
+For the statement `v.Scale(5)`, even though `v` is a value and not a pointer,
+the method with the pointer receiver is called automatically.
+That is, as a convenience, Go interprets the statement `v.Scale(5)` as
+`(&v).Scale(5)` since the `Scale` method has a pointer receiver.
+
+.play methods/indirection.go
+
+* Methods and pointer indirection (2)
+
+The equivalent thing happens in the reverse direction.
+
+Functions that take a value argument must take a value of that specific type:
+
+	var v Vertex
+	fmt.Println(AbsFunc(v))  // OK
+	fmt.Println(AbsFunc(&v)) // Compile error!
+
+while methods with value receivers take either a value or a pointer as the
+receiver when they are called:
+
+	var v Vertex
+	fmt.Println(v.Abs()) // OK
+	p := &v
+	fmt.Println(p.Abs()) // OK
+
+In this case, the method call `p.Abs()` is interpreted as `(*p).Abs()`.
+
+.play methods/indirection-values.go
+
+* Choosing a value or pointer receiver
+
+There are two reasons to use a pointer receiver.
+
+The first is so that the method can modify the value that its receiver points to.
+
+The second is to avoid copying the value on each method call.
+This can be more efficient if the receiver is a large struct, for example.
+
+In this example, both `Scale` and `Abs` are with receiver type `*Vertex`,
+even though the `Abs` method needn't modify its receiver.
+
+In general, all methods on a given type should have either value or pointer
+receivers, but not a mixture of both.
+(We'll see why over the next few pages.)
+
+.play methods/methods-with-pointer-receivers.go
+
+* Interfaces
+
+Ein Interface-Typ ist durch eine Menge von Methoden definiert.
+
+Ein Wert vom Typ eines Interfaces kann beliebige Werte darstellen, die diese Methoden implementieren.
+
+*Merke:* Im Beispielcode ist ein Fehler in Zeile 22.
+`Vertex` (der Werttyp) erfüllt `Abser` nicht, weil
+die `Abs` -Methode nur auf `*Vertex` (dem Pointer-Typ) definiert ist.
+
+.play methods/interfaces.go
+
+* Interfaces werden implizit erfüllt
+
+Ein Typ implementiert ein Interface, indem es alle Methoden des Interfaces implementiert.
+Es gibt keine explizite Deklaration dafür, es gibt kein "implementiert"-Schlüsselwort.
+
+Implizite Interfaces entkoppeln Implementierungspakete von den Paketen, die Interfaces definieren: Keines hängt vom anderen ab.
+
+Somit wird auch die präzise Definition von Interfaces forciert, weil nicht jede Implementierung gefunden und mit dem neuen Interfacenamen versehen werden muss.
+
+[[http://golang.org/pkg/io/][Package io]] definiert `Reader` und `Writer` - du musst das nicht mehr machen.
+
+.play methods/interfaces-are-satisfied-implicitly.go
+
+* Interface-Werte
+
+Man kann sich Interface-Werte als ein Tupel aus einem Wert und einem konkreten Typ
+vorstellen:
+
+	(Wert, Typ)
+
+Ein Interface-Wert hält einen Wert eines bestimmten konkreten Typs.
+
+Der Aufruf einer Methode auf einem Interface-Wert führt eigentlich die Methode gleichen 
+Namens auf dem konkreten Typ aus.
+
+.play methods/interface-values.go
+
+* Interface-Werte mit nil-Werten
+
+Wenn der konkrete Wert innerhalb des Interface-Werts nil ist,
+wird die Methode auf einem nil-Empfänger ausgeführt.
+
+In einigen Sprachen würde so ein Aufruf eine Null Pointer oder Null Reference Exception
+auslösen, aber in Go ist es üblich, Methoden zu schreiben, die auch mit einem nil-Empfänger
+entsprechend umgehen können (so wie die Methode `M` in diesem Beispiel).
+
+Merke, dass ein Interface-Wert, der einen konkreten nil-Wert hält, selbst nicht nil ist.
+
+.play methods/interface-values-with-nil.go
+
+* Nil-Interface-Werte
+
+Ein Nil-Interface-Wert hält weder einen Wert noch einen konkreten Typ.
+
+Wird auf einem Nil-Interface-Wert eine Methode aufgerufen, führt das zu einem
+Laufzeitfehler, weil es innerhalb des Interface-Tupels keinen Typ gibt, auf
+dem die _konkrete_ Methode aufgerufen werden könnte.
+
+.play methods/nil-interface-values.go
+
+* Das leere Interface
+
+Ein Interface-Typ, der keine Methoden spezifiziert, ist als das _leere_Interface_ bekannt:
+
+	interface{}
+
+Ein leeres Interface kann Werte beliebigen Typs halten, denn jeder Typ implement mindestens
+0 Methoden.
+
+Leere Interfaces werden von Code verwendet, der Werte unbekannten Typs verarbeiten kann.
+Zum Beispiel akzeptiert `fmt.Print` beliebig viele Argumente des Typs `interface{}`.
+
+.play methods/empty-interface.go
+
+* Typ-Assertions
+
+Eine _Typ-Assertion_ erlaubt den Zugriff auf den konkreten Wert, einem Interface-Wert
+zugrundeliegt.
+
+	t := i.(T)
+
+Dieser Ausdruck stellt sicher, dass der Interface-Wert `i` den konkreten Typ `T`
+hat und weist den zugrundeliegenden Wert vom Typ `T` der Variable `t` zu.
+
+Wenn der Wert von `i` nicht vom Typ `T` ist, wird dieser Ausdruck eine Go-Panic
+auslösen.
+
+Um zu _überprüfen_, ob ein Interface-Wert einen bestimmten Typ hat, 
+kann eine Typ-Assertion auch zwei Werte zurückgeben: Den zugrundeliegenden
+Wert und einen booleschen Wert, der angibt ob die Assertion erfolgreich war.
+
+	t, ok := i.(T)
+
+Wenn der Wert von `i` vom Typ `T` ist, dann wird `t` der zugrundeliegende Wert zugewiesen
+und `ok` wird true sein.
+
+Wenn nicht, dann wird `ok` false sein, `t` wird den Nullwert des Typs `T` haben und 
+es wird zu keiner Go-Panik kommen.
+
+Beachte die Ähnlichkeit zwischen dieser Syntax und jener, mit der aus einer Map gelesen wird.
+
+.play methods/type-assertions.go
+
+* Typ Switches
+
+Ein _Typ-switch_ ist ein Konstrukt, mit dem mehrere Typ-Assertions hintereinander ausgeführt
+werden können.
+
+Ein Typ-Switch ist einem normalen switch-Ausdruck sehr ähnlich. Die
+case-Ausdrücke spezifizieren allerdings Typen, nicht Werte. Diese werden mit
+dem Typ des angegebenen Interface-Werts verglichen.
+
+	switch v := i.(type) {
+	case T:
+		// here v hat den Typ T
+	case S:
+		// here v hat den Typ S
+	default:
+		// kein Treffer; hier hat v den selben Typ wie i
+	}
+
+Die Deklaration des Typ-Switches hat die gleiche Syntax wie die Typ-Assertion 
+`i.(T)`, aber der angegebene Typ `T` wird durch das Schlüsselwort `type` ersetzt.
+
+Dieser Switch-Ausdruck überprüft, ob der Interface-Wert `i` einen Wert des Typs
+`T` oder des Typs `S` hält.
+In jedem der cases für `T` bzw. `S` hat die Variable `v` auch jeweils den Typ
+`T` bzw. `S` und wird den von `i` gehaltenen Wert haben.
+Im default-case (wenn also kein case zutrifft), hat `v` einfach den selben
+Interface-Typ und den selben Wert wie `i`.
+
+.play methods/type-switches.go
+
+
+* Stringer
+
+Eines der häufigsten Interfaces ist [[//golang.org/pkg/fmt/#Stringer][`Stringer`]] aus dem Paket [[//golang.org/pkg/fmt/][`fmt`]].
+
+	type Stringer interface {
+		String() string
+	}
+
+Ein `Stringer` ist ein Typ, der sich selbst als String beschreiben kann. Das Paket `fmt` schaut
+auf dieses Interface, um Werte auszugeben.
+
+.play methods/stringer.go
+
+* Übung: Stringers
+
+Implementiere `fmt.Stringer` für den Typ `IPAddr`, sodass die Adresse als vier durch Punkte getrennte Werte auszugeben.
+
+Zum Beispiel sollte `IPAddr{1,`2,`3,`4}` als `"1.2.3.4"` ausgegeben werden.
+
+.play methods/exercise-stringer.go
+
+* Fehler
+
+Go-Programme drücken Fehler mit `error` -Werten aus.
+
+Der `error` -Typ ist ein eingebautes Interface ähnlich zu `fmt.Stringer`:
+
+	type error interface {
+		Error() string
+	}
+
+(Gleich wie bei `fmt.Stringer` schaut das Paket `fmt` bei der Ausgabe von Werten auf das Interface `error`)
+
+Funktionen geben oft einen `error` -Wert zurück, der aufrufende Code ist für das Fehlerhandling verantwortlich.
+Er sollte überprüfen, ob der Fehler `nil` ist.
+
+	i, err := strconv.Atoi("42")
+	if err != nil {
+		fmt.Printf("couldn't convert number: %v\n", err)
+	}
+	fmt.Println("Converted integer:", i)
+
+Ein nil- `error` bedeutet, dass die Ausführung erfolgreich war, ein nicht-nil- `error` bedeutet, dass es zu einem Fehler gekommen ist.
+
+.play methods/errors.go
+
+* Übung: Errors
+
+Kopiere die `Sqrt` -Funktion aus einer der früheren Übungen und ändere sie dahingehend, dass sie einen `error` -Wert zurückgibt.
+
+`Sqrt` sollte einen nicht-nil-Fehlerwert zurückgeben, wenn ihr eine negative Zahl übergeben wird, da keine komplexen Zahlen unterstützt werden.
+
+Erzeuge einen neuen Typ
+
+	type ErrNegativeSqrt float64
+
+Und mache einen `error` daraus, indem du die Methode
+
+	func (e ErrNegativeSqrt) Error() string
+
+so implementierst, dass `ErrNegativeSqrt(-2).Error()` folgenden Text zurückgibt: `"cannot`Sqrt`negative`number:`-2"`
+
+*Merke:* Der Aufruf von `fmt.Sprint(e)` von innerhalb der `Error` -Methode führt zu einer Endlosschleife. Das kann verhindert werden, indem `e` zuerst konvertiert wird: `fmt.Sprint(float64(e))`. Warum?
+
+Ändere deine `Sqrt` -Funktion so, dass sie einen `ErrNegativeSqrt` zurückgibt, wenn ihr ein negativer Wert übergeben wird.
+
+.play methods/exercise-errors.go
+
+* Reader
+
+Das `io` -Paket spezifiziert das `io.Reader` -Interface, das das lesende Ende eines Datenstroms darstellt.
+
+Die Go-Standardbibliothek enthält [[http://golang.org/search?q=Read#Global][einige Implementierungen]] dieses Interfaces, darunter Dateien, Netzwerkverbindungen, Komprimierer, Verschlüsselungsmethoden und mehr.
+
+Das `io.Reader` -Interface hat eine `Read` -Methode:
+
+	func (T) Read(b []byte) (n int, err error)
+
+`Read` befüllt das angegebene byte-Slice mit Daten und gibt die Anzahl der in das Slice geschriebenen bytes und einen Fehlercode zurück. Ein `io.EOF` -Fehler wird zurückgegeben, wenn der Stream zu Ende ist.
+
+Der Beispielcode erzeugt einen
+[[//golang.org/pkg/strings/#Reader][`strings.Reader`]]
+und verarbeitet den Output in 8-byte-Schritten.
+
+.play methods/reader.go
+
+* Übung: Reader
+
+Implementiere einen `Reader` -Typ, der einen unendlichen Stream des ASCII-Characters `'A'` ausgibt.
+
+.play methods/exercise-reader.go
+
+* Übung: rot13Reader
+
+Es ist eine gängige Vorgangsweise, einen [[http://golang.org/pkg/io/#Reader][io.Reader]] mit einem anderen `io.Reader` zu wrappen, der den Stream in irgendeiner Weise verändert.
+
+Zum Beispiel nimmt die Funktion [[http://golang.org/pkg/compress/gzip/#NewReader][gzip.NewReader]] einen `io.Reader` (einen Stream komprimierter Daten) und gibt einen `*gzip.Reader` zurück, der ebenfalls `io.Reader` implementiert (einen Stream der dekomprimierten Daten).
+
+Implementiere einen `rot13Reader`, der `io.Reader` implementiert und Daten von einem `io.Reader` liest. Der `rot13Reader` soll alle Buchstaben auf dem Stream mit dem [[http://de.wikipedia.org/wiki/ROT13][ROT13]]-Verfahren verschlüsseln.
+
+Der `rot13Reader` -Typ steht für Dich zur Verfügung. Implementiere die `Read` -Funktion, damit daraus ein `io.Reader` wird.
+
+.play methods/exercise-rot-reader.go
+
+
+* Bilder 
+
+Das [[http://golang.org/pkg/image/#Image][image-Paket]] definiert das Interface `Image`:
+
+	package image
+
+	type Image interface {
+		ColorModel() color.Model
+		Bounds() Rectangle
+		At(x, y int) color.Color
+	}
+
+*Merke*: Der Rückgabewert `Rectangle` der Methode `Bounds` ist tatsächlich ein
+[[http://golang.org/pkg/image/#Rectangle][`image.Rectangle`]], weil die
+Deklaration innerhalb des Pakets `image` erfolgt.
+
+([[http://golang.org/pkg/image/#Image][Die Dokumentation]] enthält mehr Details dazu.)
+
+Die Typen `color.Color` und `color.Model` sind ebenfalls Interfaces, wir verwenden hier einfach die vordefinierten Implementierungen `color.RGBA` und `color.RGBAModel`. Diese Interfaces und Typen sind im [[http://golang.org/pkg/image/color/][Paket image/color]] spezifiziert.
+
+.play methods/images.go
+
+* Übung: Bilder
+
+Erinnerst du dich noch an den Bildgenerator aus einer früheren Übung? Schreiben wir einen neuen, dieses Mal soll er aber eine Implementierung von `image.Image` statt eines Slices von Daten zurückgeben.
+
+Definiere deinen eigenen `Image` -Typ, implementiere die [[http://golang.org/pkg/image/#Image][notwendigen Methoden]], und rufe `pic.ShowImage` auf.
+
+`Bounds` sollte ein `image.Rectangle`, wie zum Beispiel `image.Rect(0,`0,`w,`h)` zurückgeben.
+
+`ColorModel` sollte ein `color.RGBAModel` zurückgeben.
+
+`At` sollte eine Farbe zurückgeben. Der Wert `v` aus dem Bildgenerator der vorherigen Übung sollte `color.RGBA{v,`v,`255,`255}` in dieser Übung entsprechen.
+
+.play methods/exercise-images.go
+
+* Gratuliere!
+
+Du hast diese Lektion beendet!
+
+Du kannst nun zurück zur Liste der [[/list][Module]] gehen um zu sehen, welche Lektionen als nächstes anstehen. Alternativ kannst du gleich mit der [[javascript:click('.next-page')][nächsten Lektion]] weitermachen.

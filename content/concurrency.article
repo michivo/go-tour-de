@@ -1,0 +1,198 @@
+Nebenläufigkeit
+Go bietet im Kern der Sprache Werkzeuge für Nebenläufigkeit/Parallelität an. Diese Lektion präsentiert diese Werkzeuge und zeigt anhand einiger Beispiele, wie sie einzusetzen sind.
+
+Die Autoren vo Go
+http://golang.org
+
+* Goroutinen
+
+Eine _Goroutine_ ist ein schlanker Thread, der von der Go Laufzeitumgebung verwaltet wird.
+
+	go f(x, y, z)
+
+startet eine neue Goroutine, die
+
+	f(x, y, z)
+
+ausführt. Die Auswertung von `f`, `x`, `y`, und `z` geschieht in der aktuellen Goroutine, die Ausführung von `f` in der neuen Goroutine.
+
+Goroutinen werden im selben Adressraum ausgeführt, der Zugriff auf gemeinsamen Speicher muss also synchronisiert werden. Das [[http://golang.org/pkg/sync/][`sync`]]-Paket bietet
+nützliche Werkzeuge dafür an. Diese werden aber selten gebraucht, da es in Go andere Möglichkeiten dafür gibt (wie auf der nächsten Seite zu sehen ist).
+
+.play concurrency/goroutines.go
+
+* Kanäle
+
+Kanäle sind typisierte Leitungen, über die Werte mit dem Kanal-Operator `<-` gesendet und empfangen werden können.
+
+	ch <- v    // Sende v über Kanal ch.
+	v := <-ch  // Empfange von ch und weise
+	           // den empfangenen Wert v zu.
+
+(Der Datenfluss erfolgt in die Richtung des Pfeils.)
+
+Gleich wie Maps und Slices müssen auch Kanäle erzeugt werden, bevor sie verwendet werden können:
+
+	ch := make(chan int)
+
+Standardmäßig blockieren Sende- und Empfangsoperationen, bis die andere Seite des Kanals bereit ist. So können Goroutinen ohne explizite Locks oder Bedingungsvariablen synchronisiert werden.
+
+.play concurrency/channels.go
+
+* Gepufferte Kanäle
+
+Kanäle können _gepuffert_ sein. Die Länge des Puffers kann als zweites Argument an `make` übergeben werden. Auf diese Weise wird ein gepufferter Kanal erzeugt:
+
+	ch := make(chan int, 100)
+
+Sendeoperationen auf einem gepufferten Kanal blockieren nur, wenn der Puffer voll ist. Empfangsoperationen blockieren nur, wenn der Kanal leer ist.
+
+Ändere das Beispiel so ab, dass der Puffer voll- bzw. überläuft und schau, was passiert.
+
+.play concurrency/buffered-channels.go
+
+* Schließen von Kanälen und Range
+
+Der Sender kann einen Kanal schließen, um anzuzeigen, dass keine weiteren Werte geschickt werden. Der Empfänger kann prüfen, ob ein Kanal noch offen ist, indem ein zweiter Parameter bei der Empfangsoperation angegeben wird. Nach dem Aufruf von
+
+	v, ok := <-ch
+
+ist `ok` `false`, wenn keine weiteren Werte empfangen werden können und der Kanal geschlossen ist.
+
+Die Schleife `for`i`:=`range`c` empfängt wiederholt Werte vom Kanal, bis er geschlossen ist.
+
+*Merke:* Nur der Sender sollte einen Kanal schließen, nie der Empfänger. Ein Sendeversuch auf einem geschlossenen Kanal führt zu einem Programmabbruch.
+
+*Merke*ebenso*: Kanäle sind nicht mit Dateien zu vergleichen. Sie müssen für gewöhnlich nicht geschlossen werden, sondern nur dann, wenn dem Empfänger mitgeteilt werden soll dass keine weiteren Werte geschickt werden (also zum Beispiel zum Beenden einer `range` -Schleife).
+
+.play concurrency/range-and-close.go
+
+* Select
+
+Die `select` -Anweisung lässt eine Goroutine auf mehrere Kommunikationsoperationen warten.
+
+Ein `select` blockiert solange, bis einer seiner Cases ausgeführt werden kann und führt diesen Case dann aus. Wenn mehrere Cases gleichzeitig bereit sind, wird zufällig einer für die Ausführung ausgewählt.
+
+.play concurrency/select.go
+
+* Standardauswahl
+
+Der `default` -Case in einem `select` wird ausgeführt, wenn kein anderer Case bereit ist.
+
+Ein `default` -Case kann eingesetzt werden, um ein Senden oder Empfangen zu versuchen, ohne dass der Aufruf blockiert:
+
+	select {
+	case i := <-c:
+		// verwende i
+	default:
+		// Empfangen von c würde blockieren
+	}
+
+.play concurrency/default-selection.go
+
+* Übung: Äquivalente Binärbäume
+
+Es gibt viele unterschiedliche Möglichkeiten, Werte in Binärbäumen zu speichern, sodass die Werte in der gleichen Abfolge in den Blättern gespeichert sind. Hier sind zum Beispiel zwei Binärbäume, die die Werte 1, 1, 2, 3, 5, 8 und 13 speichern
+
+.image /content/img/tree.png
+
+Eine Funktion, die überprüft ob zwei Binärbäume dieselbe Abfolge von Werten beinhalten, ist in den meisten Sprachen sehr umständlich zu implementieren. Wir werden mithilfe der Nebenläufigkeit und der Kanäle von Go eine einfache Lösung implementieren.
+
+Dieses Beispiel verwendet das `tree` -Paket, das folgenden Typ definiert:
+
+	type Tree struct {
+		Left  *Tree
+		Value int
+		Right *Tree
+	}
+
+* Übung: Äquivalente Binärbäume
+
+*1.* Implementiere die `Walk` -Funktion.
+
+*2.* Teste die `Walk` -Funktion.
+
+Die Funktion `tree.New(k)` erzeugt einen neuen, zufällig aufgebauten Binärbaum, der die Werte `k`, `2k`, `3k`, ..., `10k` speichert.
+
+Erzeuge einen neuen Kanal `ch` und starte den Walker:
+
+	go Walk(tree.New(1), ch)
+
+Lies dann zehn Werte vom Kanal und gib sie aus. Es sollten die Zahlen 1, 2, 3, ..., 10 sein.
+
+*3.* Implementiere die `Same` -Funktion unter Verwendung der `Walk` -Funktion, um festzustellen, ob `t1` und `t2` dieselben Werte speichern.
+
+*4.* Teste die `Same` -Funktion.
+
+`Same(tree.New(1),`tree.New(1))` sollte `true` zurückgeben, `Same(tree.New(1),`tree.New(2))` sollte `false` zurückgeben.
+
+.play concurrency/exercise-equivalent-binary-trees.go
+
+* sync.Mutex
+
+Wir haben gesehen wie hervorragend Kanäle geeignet sind für die Kommunikation zwischen Goroutinen.
+
+Aber was ist wenn wir keine Kommunikation benötigen? Was wenn wir nur sicherstellen wollen,
+dass nur eine Goroutine gleichzeitig auf eine Variable zugreifen kann um Konflikte zu vermeiden? 
+
+Dieses Konzept heisst _mutual_exclusion_, und der gebräuchliche Name für die Datenstruktur welche dies bereitstellt ist _mutex_. 
+
+Go's Standardbibliothek bietet mutual exclusion mit
+[[https://golang.org/pkg/sync/#Mutex][`sync.Mutex`]] und seine beiden Methoden:
+
+- `Lock`
+- `Unlock`
+
+Wir können einen Teil des Quellcodes mit mutual exclusion ausführen lassen indem wir ihn
+mit einem Aufruf von `Lock` und `Unlock` einklammern wie in der Methode `Inc` gezeigt.
+
+Wir können auch `defer` benutzen um sicherzustellen, dass der Mutex entsperrt wird wie in der `Value` Methode.
+
+.play concurrency/mutex-counter.go
+
+* Übung: Web Crawler
+
+In dieser Übung wirst du einen Web Crawler mithilfe von Gos Werkzeugen für Nebenläufigkeit parallelisieren.
+
+Ändere die `Crawl` -Funktion, sodass sie URLs parallel einliest ohne dieselbe URL mehrmals einzulesen.
+
+.play concurrency/exercise-web-crawler.go
+
+* Weiterführendes...
+
+#appengine: Du kannst 
+#appengine: [[https://golang.org/doc/install/][Go installieren]]
+
+#appengine: Wenn du Go installiert hast, ist die 
+Die
+[[https://golang.org/doc/][Go-Dokumentation]] 
+#appengine: ein guter Startpunkt für Weiterführendes.
+ist ein guter Startpunkt für Weiterführendes.
+Sie enthält Referenzen, Tutorials, Videos und vieles mehr.
+
+Um zu lernen, wie man Go-Code strukturieren sollte und wie man mit ihm arbeiten sollte, schau dir 
+[[https://www.youtube.com/watch?v=XCsL89YtqCs][diesen Screencast]] an, oder lies [[http://golang.org/doc/code.html][How to Write Go Code]].
+
+Wenn du Hilfe mit der Standardbibliothek brauchst, schau dir die [[https://golang.org/pkg/][Paketreferenz]] an. Falls du Hilfe mit der Sprache selbst brauchst, wird es dich vielleicht überraschen, wie leicht lesbar die [[http://golang.org/ref/spec][Sprachspezifikation]] ist.
+
+Möchtest du tiefer in Gos Nebenläufigkeitsmodell eintauchen, schau dir
+[[https://www.youtube.com/watch?v=f6kdp27TYZs][Go Concurrency Patterns]]
+([[https://talks.golang.org/2012/concurrency.slide][slides]])
+und
+[[https://www.youtube.com/watch?v=QDDwwePbDtw][Advanced Go Concurrency Patterns]]
+([[https://talks.golang.org/2013/advconc.slide][slides]])
+an und lies die Codebeispiele aus
+[[https://golang.org/doc/codewalk/sharemem/][Share Memory by Communicating]].
+
+Möchtest du mit Go Webapplikationen implementieren, schau dir
+[[https://vimeo.com/53221558][A simple programming environment]]
+([[https://talks.golang.org/2012/simple.slide][slides]])
+an und lies folgendes Tutorial:
+[[https://golang.org/doc/articles/wiki/][Writing Web Applications]].
+
+Das [[https://golang.org/doc/codewalk/functions/][First-Class-Funktionen in Go]]-Programmbeispiel illustriert die unterschiedlichen Funktionstypen in Go auf interessante Weise.
+
+Der [[https://blog.golang.org/][Go Blog]] hat eine lange Liste interessanter und informativer Artikel zu Go.
+
+Besuche [[https://golang.org][golang.org]] für noch mehr Informationen.
+

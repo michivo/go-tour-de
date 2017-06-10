@@ -1,0 +1,109 @@
+Willkommen!
+Lerne hier, durch diese Tour zu navigieren und Code auszuführen!
+
+Die Autoren von Go.
+http://golang.org
+
+* Hallo, 世界
+
+Willkommen zu einer Einführungstour in die [[https://golang.org][Programmiersprache Go]].
+
+Die Tour ist in eine Reihe von Modulen gegliedert, auf die du durch einen Klick auf
+[[javascript:highlight(".logo")][Eine Tour durch Go]] zugreifen kannst.
+
+Du kannst auch auf das Inhaltsverzeichnis zugreifen, indem du auf das [[javascript:highlightAndClick(".nav")][Menü]] oben rechts klickst.
+
+Im Laufe der Tour gibt es eine Reihe von Informationstexten und Übungen, mit denen du dich auseinandersetzen wirst.
+
+Du kannst durch diese Texte und Übungen wie folgt navigieren:
+
+- Klicke auf [[javascript:highlight(".prev-page")]["zurück"]] oder drücke `Bild`auf`, um zur vorigen Seite zu gelangen.
+
+- Klicke auf [[javascript:highlight(".next-page")]["weiter"]] oder drücke `Bild`ab`, um zur nächsten Seite zu gelangen.
+
+Die Tour ist interaktiv. Klicke auf den [[javascript:highlightAndClick("#run")][Run]]-Button  
+(oder Drücke `Umschalt-Enter`) um das Programm auf
+#appengine: einem Remoteserver auszuführen.
+deinem Rechner auszuführen.
+Das Ergebnis wird unterhalb des Codes angezeigt.
+
+Diese Beispielprogramme demonstrieren unterschiedliche Aspekte von Go. Die Programme in dieser Tour sind als Startpunkte für deine eigenen Experimente gedacht.
+
+Bearbeite das Programm und führe es noch einmal aus.
+
+Merke: Wenn du auf [[javascript:highlightAndClick("#format")][Format]] klickst oder `Strg-Enter` drückst, wird
+der Text im Editor mit dem 
+[[https://golang.org/cmd/gofmt/][gofmt]]-Tool formatiert. Du kannst das Syntax-Highlighting mit dem 
+[[javascript:highlightAndClick(".syntax-checkbox")][Syntax on/off]]-Button (de)aktivieren.
+
+Wenn du so weit bist, klicke auf den [[javascript:highlightAndClick(".next-page")][Pfeil nach rechts]] weiter unten oder oder drücke die `Bild`ab` -Taste.
+
+.play welcome/hello.go
+
+* Go in deiner Sprache
+
+Die Tour ist auch in anderen Sprachen verfügbar:
+
+- [[https://tour.golang.org][Englisch — English]] (Originalversion)
+- [[https://go-tour-br.appspot.com/][Brazilian Portuguese — Português do Brasil]]
+- [[https://go-tour-ca.appspot.com/][Catalan — Català]]
+- [[https://go-tour-es.appspot.com/][Spanish — Español]]
+- [[https://go-tour-fr.appspot.com/][French — Français]]
+- [[https://go-tour-id2.appspot.com/][Indonesia — Bahasa]]
+- [[https://go-tour-ita.appspot.com/][Italian — Italiano]]
+- [[https://go-tour-he.appspot.com/][Hebrew — עִבְרִית]]
+- [[https://go-tour-jp.appspot.com/][Japanese — 日本語]]
+- [[https://go-tour-kr.appspot.com/][Korean — 한국어]]
+- [[https://go-tour-ro.appspot.com/][Romanian — Română]]
+- [[https://tour.go-zh.org/][Simplified Chinese — 中文（简体）]]
+- [[https://go-tour-zh-tw.appspot.com/][Traditional Chinese — 中文（繁體）]]
+- [[https://go-tour-ua.appspot.com/][Ukrainian — Українська]]
+- [[https://go-tour-uz.appspot.com/][Uzbek — Ўзбекча]]
+- [[https://go-tour-turkish.appspot.com/][Turkish - Türkçe]]
+
+Klicke den [[javascript:highlightAndClick(".next-page")]["Weiter"]]-Button oder drücke `Bild`ab` um fortzufahren.
+
+#appengine: * Go offline
+#appengine: 
+#appengine: Diese Tour ist (in der englischen Originalversion) auch als Standalone-Programm verfügbar,
+#appengine: das ohne Internetzugang ausgeführt werden kann.
+#appengine: 
+#appengine: Die Standalone-Version läuft schneller, weil der Code auf deinem Rechner kompiliert
+#appengine: und ausgeführt wird.
+#appengine: 
+#appengine: Um die Tour local auszuführen, musst du zuerst
+#appengine: [[http://golang.org/dl/][Go herunterladen und installieren]],
+#appengine: dann kannst du die Tour von der Kommandozeile aus starten:
+#appengine: 
+#appengine: 	go tool tour
+#appengine: 
+#appengine: Das Tour-Programm wird ein Browserfenster öffnen, in dem deine lokale Version der 
+#appengine: Tour läuft - wie gesagt auf Englisch. Natürlich kannst du die Tour auch auf dieser
+#appengine: Seite durchgehen.
+#appengine: 
+#appengine: * Der Go Playground
+#appengine: 
+#appengine: Diese Tour ist auf dem [[https://play.golang.org/][Go Playground]] aufgebaut, einem
+#appengine: Webservice das auf den Servern von [[https://golang.org/][golang.org]] läuft.
+#appengine: 
+#appengine: Der Service nimmt ein Go-Programm entgegen, kompiliert es, linkt es, führt
+#appengine: es in einer Sandbox aus und gibt am Ende den Output zurück.
+#appengine: 
+#appengine: Es gibt Einschränkungen für Programme, die im Playground ausgeführt werden können: 
+#appengine: 
+#appengine: - Im Playground beginnt die Zeit um 2009-11-10 23:00:00 UTC (die Bedeutung dieser Zeit zu eruieren bleibt dem geneigten Leser überlassen). Das erleichtert es, Programme und deren deterministischen Output zu cachen.
+#appengine: 
+#appengine: - Es gibt Einschränkungen bezüglich der Ausführungszeit sowie der CPU- und RAM-Nutzung, außerdem kann nicht auf externe Netzwerk-Hosts zugegriffen werden.
+#appengine: 
+#appengine: Der Playground verwendet den letzten stabilen Release von Go.
+#appengine: 
+#appengine: Auf "[[https://blog.golang.org/playground][Inside the Go Playground]]" finden sich weitere Informationen zum Go Playground.
+#appengine: 
+#appengine: .play welcome/sandbox.go
+
+* Gratuliere
+
+Du hast das erste Modul der Tour beendet!
+
+Klicke jetzt auf [[javascript:highlightAndClick(".logo")][Eine Tour durch Go]] um zu sehen, was es sonst noch
+über Go zu lernen gibt oder fahre mit der [[javascript:click('.next-page')][nächsten Lektion]] fort.
