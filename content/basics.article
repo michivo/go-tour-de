@@ -181,7 +181,7 @@ Oder, etwas vereinfacht:
 
 Im Gegensatz zu C bedarf es für die Zuweisung von Werten unterschiedlichen Typs immer einer expliziten Typumwandlung.
 
-Versuche, das `float64` oder das `int` im Beispiel zu entfernen und den Code auszuführen.
+Versuche, das `float64` oder das `uint` im Beispiel zu entfernen und den Code auszuführen.
 
 .play basics/type-conversions.go
 
