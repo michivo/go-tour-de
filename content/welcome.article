@@ -22,7 +22,7 @@ Du kannst durch diese Texte und Übungen wie folgt navigieren:
 - Klicke auf [[javascript:highlight(".next-page")]["weiter"]] oder drücke `Bild`ab`, um zur nächsten Seite zu gelangen.
 
 Die Tour ist interaktiv. Klicke auf den [[javascript:highlightAndClick("#run")][Run]]-Button  
-(oder Drücke `Umschalt-Enter`) um das Programm auf
+(oder drücke `Umschalt-Enter`), um das Programm auf
 #appengine: einem Remoteserver auszuführen.
 deinem Rechner auszuführen.
 Das Ergebnis wird unterhalb des Codes angezeigt.
@@ -36,7 +36,7 @@ der Text im Editor mit dem
 [[https://golang.org/cmd/gofmt/][gofmt]]-Tool formatiert. Du kannst das Syntax-Highlighting mit dem 
 [[javascript:highlightAndClick(".syntax-checkbox")][Syntax on/off]]-Button (de)aktivieren.
 
-Wenn du so weit bist, klicke auf den [[javascript:highlightAndClick(".next-page")][Pfeil nach rechts]] weiter unten oder oder drücke die `Bild`ab` -Taste.
+Wenn du so weit bist, klicke auf den [[javascript:highlightAndClick(".next-page")][Pfeil nach rechts]] weiter unten oder drücke die `Bild`ab`-Taste.
 
 .play welcome/hello.go
 
@@ -61,7 +61,7 @@ Die Tour ist auch in anderen Sprachen verfügbar:
 - [[https://go-tour-uz.appspot.com/][Uzbek — Ўзбекча]]
 - [[https://go-tour-turkish.appspot.com/][Turkish - Türkçe]]
 
-Klicke den [[javascript:highlightAndClick(".next-page")]["Weiter"]]-Button oder drücke `Bild`ab` um fortzufahren.
+Klicke den [[javascript:highlightAndClick(".next-page")]["Weiter"]]-Button oder drücke `Bild`ab`, um fortzufahren.
 
 #appengine: * Go offline
 #appengine: 
@@ -71,7 +71,7 @@ Klicke den [[javascript:highlightAndClick(".next-page")]["Weiter"]]-Button oder 
 #appengine: Die Standalone-Version läuft schneller, weil der Code auf deinem Rechner kompiliert
 #appengine: und ausgeführt wird.
 #appengine: 
-#appengine: Um die Tour local auszuführen, musst du zuerst
+#appengine: Um die Tour lokal auszuführen, musst du zuerst
 #appengine: [[http://golang.org/dl/][Go herunterladen und installieren]],
 #appengine: dann kannst du die Tour von der Kommandozeile aus starten:
 #appengine: 
@@ -105,5 +105,5 @@ Klicke den [[javascript:highlightAndClick(".next-page")]["Weiter"]]-Button oder 
 
 Du hast das erste Modul der Tour beendet!
 
-Klicke jetzt auf [[javascript:highlightAndClick(".logo")][Eine Tour durch Go]] um zu sehen, was es sonst noch
+Klicke jetzt auf [[javascript:highlightAndClick(".logo")][Eine Tour durch Go]], um zu sehen, was es sonst noch
 über Go zu lernen gibt oder fahre mit der [[javascript:click('.next-page')][nächsten Lektion]] fort.
