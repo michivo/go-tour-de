@@ -1,5 +1,5 @@
 Mehr Typen: Structs, Slices und Maps
-Lerne, wie Typen mithilfe bereits bestehender Typen definiert werden können: Diese Lektion behandelt Structgs, Arrays, Slices und Maps.
+Lerne, wie Typen mithilfe bereits bestehender Typen definiert werden können: Diese Lektion behandelt Structs, Arrays, Slices und Maps.
 
 Die Go-Autoren
 http://golang.org
@@ -13,12 +13,12 @@ Der Typ `*T` ist ein Pointer auf einen Wert des Typs `T`. Der Nullwert von `*T` 
 
 	var p *int
 
-Der `&` -Operator erzeugt einen Pointer auf seinen Operanden.
+Der `&`-Operator erzeugt einen Pointer auf seinen Operanden.
 
 	i := 42
 	p = &i
 
-Der `*` -Operator liefert den Wert auf den der Pointer verweist.
+Der `*`-Operator liefert den Wert auf den der Pointer verweist.
 
 	fmt.Println(*p) // lese i mit dem Pointer p
 	*p = 21         // setze i mit dem Pointer p
@@ -33,7 +33,7 @@ Im Gegensatz zu C gibt es in Go keine Pointerarithmetik.
 
 Ein `struct` ist ein Verbund von Elementen.
 
-(Und eine `type` -Deklaration ist, was man erwartet: Eine Typdeklaration.)
+(Und eine `type`-Deklaration ist, was man erwartet: Eine Typdeklaration.)
 
 .play moretypes/structs.go
 
@@ -55,7 +55,7 @@ Die Indirektion über den Pointer ist transparent.
 
 Ein Struct-Literal beschreibt einen neu allokierten Struct-Wert, indem eine Liste der Werte aller Elemente des Structs angegeben wird.
 
-Man kann auch nur eine Untermenge der Elemente angeben. Das ist mit der `Name:` -Syntax möglich, die Reihenfolge der Elemente ist dabei irrelevant.
+Man kann auch nur eine Untermenge der Elemente angeben. Das ist mit der `Name:`-Syntax möglich, die Reihenfolge der Elemente ist dabei irrelevant.
 
 Der Präfix `&` gibt einen Pointer auf den Struct-Wert zurück.
 
@@ -73,7 +73,7 @@ deklariert eine Variable `a` als ein Array von zehn Integers.
 
 Die Länge eines Arrays ist Teil seines Typs, die Größe eines Arrays kann also nicht verändert werden.
 Das sieht aus wie eine Einschränkung, aber keine Sorge:
-In Go gibt es einen einfachen Weg, mit Arrays zu arbeiten.
+In Go gibt es einen einfachen Weg mit Arrays zu arbeiten.
 
 .play moretypes/array.go
 
@@ -159,7 +159,7 @@ abgefragt werden.
 Man kann die Länge eines Slices durch re-slicing ändern, wenn die Kapazität des 
 Slices dies zulässt.
 Versuche, eine der Slice-Operationen im Beispielprogramm zu ändern, sodass die 
-Kapazität des Slices überschritten wird und schau, was passiert.
+Kapazität des Slices überschritten wird und schau was passiert.
 
 .play moretypes/slice-len-cap.go
 
@@ -180,7 +180,7 @@ Slices können mit der eingebauten `make`-Funktion erzeugt werden;
 so werden Arrays dynamischer Größe erzeugt.
 
 Die `make`-Funktion allokiert ein Array voller Nullen und gibt ein Slice
-zurück die dieses Array referenziert:
+zurück, die dieses Array referenziert:
 
 	a := make([]int, 5)  // len(a)=5
 
@@ -202,7 +202,7 @@ Slices können beliebige Typen beinhalten, also auch andere Slices.
 
 * Elemente zu einem Slice hinzufügen
 
-Es ist möglich, neue Elemente zu einem Slice hinzuzufügen. Go bietet dafür
+Es ist möglich neue Elemente zu einem Slice hinzuzufügen. Go bietet dafür
 im Basispaket die Funktion `append` an. Die 
 [[http://golang.org/pkg/builtin/#append][Dokumentation]] des Basispakets 
 beschreibt `append` genauer.
@@ -226,7 +226,7 @@ verweist dann auf das neu allokierte Array.
 
 * Range
 
-Die `range` -Form der `for` -Schleife iteriert über ein Slice oder eine Map.
+Die `range`-Form der `for`-Schleife iteriert über ein Slice oder eine Map.
 
 .play moretypes/range.go
 
@@ -249,7 +249,7 @@ Welches Bild du erzeugst, ist dir überlassen. Interessante Funktionen könnten 
 
 (Hinweis: Du wirst eine Schleife benötigen, um die `[]uint8` innerhalb der `[][]uint8` zu allokieren).
 
-(Hinweis: Verwende `uint8(intValue)` für die Typumwandlung auf vorzeichenlose 8-bit-Integer.)
+(Hinweis: Verwende `uint8(intValue)` für die Typumwandlung auf vorzeichenlose 8-Bit-Integer.)
 
 .play moretypes/exercise-slices.go
 
@@ -257,11 +257,11 @@ Welches Bild du erzeugst, ist dir überlassen. Interessante Funktionen könnten 
 
 Eine Map ordnet Schlüsseln Werte zu.
 
-Maps müssen mit `make` (nicht `new`) erzeugt werden. Die `nil` -Map ist leer, ihr können keine Schlüssel/Wertpaare zugewiesen werden.
+Maps müssen mit `make` (nicht `new`) erzeugt werden. Die `nil`-Map ist leer, ihr können keine Schlüssel/Wertpaare zugewiesen werden.
 
 .play moretypes/maps.go
 
-* Map Literale
+* Map-Literale
 
 Map-Literale sehe aus wie Struct-Literale, allerdings müssen bei Maps auch Schlüssel angegeben werden.
 
@@ -293,7 +293,7 @@ Mit einer zweiwertigen Zuweisung überprüfen, ob ein Schlüssel in einer Map vo
 
 Ist `key` in `m`, dann ist `ok` `true`. Wenn nicht, ist `ok` `false` und `elem` hat den Nullwert des Werttyps der Map.
 
-Folglich wird auch der Nullwert des Werttyps der Map zurückgegeben, wenn versucht wird, einen Wert für einen Schlüssel, der nicht in der Map ist, auszulesen.
+Folglich wird auch der Nullwert des Werttyps der Map zurückgegeben, wenn versucht wird einen Wert für einen Schlüssel, der nicht in der Map ist, auszulesen.
 
 .play moretypes/mutating-maps.go
 
@@ -317,7 +317,7 @@ Funktionen sind auch Werte.
 Go-Funktionen können auch Closures sein. Eine Closure ist eine Funktion, die auf Variablen ihres Erstellungskontexts zugreifen kann. Die Funktion kann die Werte von Variablen auslesen oder den Variablen neue
 Werte zuweisen. Somit ist die Funktion an die Variablen "gebunden".
 
-Die `adder` -Funktion gibt zum Beispiel eine Closure zurück. Jede Closure ist an ihre eigene `sum` -Variable gebunden.
+Die `adder`-Funktion gibt zum Beispiel eine Closure zurück. Jede Closure ist an ihre eigene `sum`-Variable gebunden.
 
 .play moretypes/function-closures.go
 
@@ -325,7 +325,7 @@ Die `adder` -Funktion gibt zum Beispiel eine Closure zurück. Jede Closure ist a
 
 Lass uns ein bisschen mit Funktionen herumspielen.
 
-Implementiere eine `fibonacci` -Funktion, die eine Funktion (eine Closure) zurückgibt, die wiederum aufeinanderfolgende Fibonaccizahlen zurückgibt.
+Implementiere eine `fibonacci`-Funktion, die eine Funktion (eine Closure) zurückgibt, die wiederum aufeinanderfolgende Fibonaccizahlen zurückgibt.
 
 .play moretypes/exercise-fibonacci-closure.go
 
@@ -333,4 +333,4 @@ Implementiere eine `fibonacci` -Funktion, die eine Funktion (eine Closure) zurü
 
 Du hast diese Lektion beendet!
 
-Du kannst nun zurück zur Liste der [[/list][Module]] gehen um zu sehen, welche Lektionen als nächstes anstehen. Alternativ kannst du gleich mit der [[javascript:click('.next-page')][nächsten Lektion]] weitermachen.
+Du kannst nun zurück zur Liste der [[/list][Module]] gehen, um zu sehen, welche Lektionen als nächstes anstehen. Alternativ kannst du gleich mit der [[javascript:click('.next-page')][nächsten Lektion]] weitermachen.
